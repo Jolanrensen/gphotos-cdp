@@ -73,7 +73,7 @@ var (
 	workersFlag   = flag.Int("workers", 4, "number of concurrent downloads allowed")
 	albumIdFlag   = flag.String("album", "", "ID of album to download, has no effect if lastdone file is found or if -start contains full URL")
 	albumTypeFlag = flag.String("albumtype", "album", "type of album to download (as seen in URL), has no effect if lastdone file is found or if -start contains full URL")
-	testTypeFlag  = flag.Bool("testtype", false, "adds --test-type to the command to run the browser")
+	testTypeFlag  = flag.String("testtype", "", "adds --test-type to the command to run the browser")
 )
 
 const gphotosUrl = "https://photos.google.com"
@@ -346,8 +346,8 @@ func (s *Session) NewWindow() (context.Context, context.CancelFunc) {
 		opts = append(opts, chromedp.Flag("disable-gpu", false))
 	}
 
-	if *testTypeFlag {
-		opts = append(opts, chromedp.Flag("test-type", true))
+	if len(*testTypeFlag) > 0 {
+		opts = append(opts, chromedp.Flag("test-type", *testTypeFlag))
 	}
 
 	ctx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
